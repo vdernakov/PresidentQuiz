@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="num_questions">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </string-array>
+    <string-array name="num_answers">
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+    </string-array>
+</resources>

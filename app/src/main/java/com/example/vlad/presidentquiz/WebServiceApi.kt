@@ -1,6 +1,7 @@
 package com.example.vlad.presidentquiz
 
 import android.graphics.BitmapFactory
+import android.media.Image
 import android.util.Log
 import kotlinx.coroutines.experimental.async
 import okhttp3.MediaType
@@ -35,14 +36,18 @@ object WebServiceApi {
         } catch (exc: Exception) {
             Log.d("myLog", exc.toString())
         }
-        Log.d("myLog", questions.toString())
         questions
     }
 
     fun loadImage(name: String) = async {
-        var urlString = WebServiceConfig.url + WebServiceConfig.pathToImages + name
-        val url = URL(urlString)
-        val stream = url.openStream()
-        BitmapFactory.decodeStream(stream)
+        var image = ImageCache.get(name)
+        if (image == null) {
+            var urlString = WebServiceConfig.url + WebServiceConfig.pathToImages + name
+            val url = URL(urlString)
+            val stream = url.openStream()
+            image = BitmapFactory.decodeStream(stream)
+            ImageCache.put(name, image)
+        }
+        image
     }
 }

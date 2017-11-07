@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">PresidentQuiz</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="num_questions">Количество вопросов</string>
+    <string name="num_questions_description">Количество вопросов в викторине</string>
+
+    <string name="num_answers">Вариантов ответа</string>
+    <string name="num_answers_description">Количество вариантов ответа в вопросе</string>
+    <string name="title_activity_result">ResultActivity</string>
 </resources>

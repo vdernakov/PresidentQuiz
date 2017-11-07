@@ -1,9 +1,11 @@
 package com.example.vlad.presidentquiz
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -13,48 +15,83 @@ import kotlinx.android.synthetic.main.activity_quiz.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
-class QuizActivity : AppCompatActivity() {
+class QuizActivity : AppCompatActivity(), QuestionFragment.QuestionFragmentListener, Quiz.QuizListener {
+    private val PREF_NUM_QUESTIONS = "pref_numQuestions"
+    private val PREF_NUM_ANSWERS = "pref_numAnswers"
+
     private var quiz: Quiz? = null
+    private var settingsChanged = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
         setSupportActionBar(toolbar)
 
-        val adapter = object : FragmentPagerAdapter(supportFragmentManager) {
-            override fun getItem(position: Int): Fragment {
-                return QuestionFragment.newInstance(
-                        quiz!!.questions.get(position),
-                        position
-                )
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("myLog", "onResume")
+        if (settingsChanged) {
+            settingsChanged = false
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+            val numQuestions = sharedPreferences.getString("pref_numQuestions", null).toInt()
+            val numAnswers = sharedPreferences.getString("pref_numAnswers", null).toInt()
+
+            async(UI) {
+                quiz = QuizFactory.new(numQuestions, numAnswers, this@QuizActivity).await()
+                viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
+                    override fun getItem(position: Int): Fragment {
+                        return QuestionFragment.newInstance(
+                                quiz!!.questions[position],
+                                position,
+                                this@QuizActivity
+                        )
+                    }
+                    override fun getCount(): Int {
+                        return quiz!!.questions.size
+                    }
+                }
             }
-
-            override fun getCount(): Int {
-                return quiz!!.questions.size
-            }
-
-        }
-
-        async(UI) {
-            quiz = QuizFactory.new(10, 4).await()
-            viewPager.adapter = adapter
-            Log.d("myLog", quiz.toString())
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_quiz, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                dispatchSettingsIntent()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener {
+        _, _ -> settingsChanged = true
+    }
+
+    private fun dispatchSettingsIntent() {
+        val preferencesIntent = Intent(this, SettingsActivity::class.java)
+        startActivity(preferencesIntent)
+    }
+
+    override fun registerQuestion(question: Question?, userAnswerId: Int) {
+        quiz!!.regiserAnswer(question!!, userAnswerId, false)
+    }
+
+    override fun quizCompleted(result: Int) {
+        settingsChanged = true
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra("result", result)
+        startActivity(intent)
     }
 }
