@@ -1,0 +1,15 @@
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_margin="3dp"
+    android:background="@color/answerButton"
+    android:paddingBottom="2dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="2dp"
+    android:textAllCaps="false"
+    tools:layout_editor_absoluteX="74dp"
+    tools:layout_editor_absoluteY="16dp"/>
