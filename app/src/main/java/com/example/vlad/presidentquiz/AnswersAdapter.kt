@@ -21,17 +21,19 @@ class AnswersAdapter(
     private val buttons: ArrayList<Button> = ArrayList()
     private var correctAnswerButton: Button? = null
 
+    private val GREEN = 0xFF66BB6A.toInt()
+    private val RED = 0xFFEF5350.toInt()
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val answer = answers[position]
-
         holder.button.text = answer.text
 
         if (userAnswerId != null) {
             if (answer.id == userAnswerId) {
-                holder.button.setBackgroundColor(Color.RED)
+                holder.button.setBackgroundColor(RED)
             }
             if (answer.id == answerId) {
-                holder.button.setBackgroundColor(Color.GREEN)
+                holder.button.setBackgroundColor(GREEN)
             }
             holder.button.isClickable = false
             return
@@ -39,8 +41,8 @@ class AnswersAdapter(
 
         holder.button.setOnClickListener {
             disableButtons()
-            holder.button.setBackgroundColor(if (answerId == answer.id) Color.GREEN else Color.RED)
-            correctAnswerButton!!.setBackgroundColor(Color.GREEN)
+            holder.button.setBackgroundColor(if (answerId == answer.id) GREEN else RED)
+            correctAnswerButton!!.setBackgroundColor(GREEN)
             listener.register(answer.id)
         }
 

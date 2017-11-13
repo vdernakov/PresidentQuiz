@@ -3,12 +3,15 @@ package com.example.vlad.presidentquiz
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_question.*
 import kotlinx.android.synthetic.main.fragment_question.view.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import java.util.*
 
 /**
  * Created by vlad on 07/11/17.
@@ -16,11 +19,13 @@ import kotlinx.coroutines.experimental.async
 class QuestionFragment : Fragment(), AnswersAdapter.AnswerListener {
     private var question: Question? = null
     private var questionNumber: Int? = null
-    private var userAnswerId: Int? = null
+    var userAnswerId: Int? = null
     private var listener: QuestionFragmentListener? = null
+    private fun adapter(answers: ArrayList<Answer>) = AnswersAdapter(answers, question!!.answerId, userAnswerId, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         if (arguments != null) {
             question = arguments.getParcelable(ARG_QUESTION)
             questionNumber = arguments.getInt(ARG_QUESTION_NUMBER)
@@ -33,13 +38,15 @@ class QuestionFragment : Fragment(), AnswersAdapter.AnswerListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("myLogThis", this.toString())
         val view = inflater!!.inflate(R.layout.fragment_question, container, false)
 
-        val adapter = AnswersAdapter(question!!.answers, question!!.answerId, userAnswerId, this)
         view.recyclerView.layoutManager = GridLayoutManager(activity, 2)
-        view.recyclerView.adapter = adapter
+        view.recyclerView.adapter = adapter(question!!.answers)
+
         async(UI) {
             val bitmap = WebServiceApi.loadImage(question!!.image).await()
+            imageProgressBar.visibility = View.GONE
             view.imageView.setImageBitmap(bitmap)
         }
         return view
@@ -48,6 +55,24 @@ class QuestionFragment : Fragment(), AnswersAdapter.AnswerListener {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         userAnswerId?.let { outState.putInt("userAnswerId", it) }
+    }
+
+    fun hideHalfOfAnswers() {
+        val oldAnswers = question!!.answers
+        val newAnswers = ArrayList<Answer>()
+        val numAnswers = oldAnswers.size / 2
+
+        oldAnswers.filterTo(newAnswers) { it.id == question!!.answerId }
+
+        for (answer in oldAnswers) {
+            if (newAnswers.size == numAnswers) break
+            if (answer.id != question!!.answerId) {
+                newAnswers.add(answer)
+            }
+        }
+        Collections.shuffle(newAnswers)
+        question!!.answers = newAnswers
+        recyclerView.adapter = adapter(newAnswers)
     }
 
     companion object {

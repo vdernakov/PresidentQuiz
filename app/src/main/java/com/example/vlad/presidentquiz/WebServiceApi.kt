@@ -24,6 +24,7 @@ object WebServiceApi {
 
         val mediaType = MediaType.parse("application/json; charset=utf-8")
         val client = OkHttpClient()
+
         try {
             val body = RequestBody.create(mediaType, data.toString())
             val request = Request.Builder()
@@ -37,6 +38,59 @@ object WebServiceApi {
             Log.d("myLog", exc.toString())
         }
         questions
+    }
+
+    fun writeResult(name: String, value: Int, numQuestions: Int, numAnswers: Int) = async {
+        var result: Result? = null
+
+        val data = JSONObject()
+        data.put("name", name)
+        data.put("value", value)
+        data.put("numQuestions", numQuestions)
+        data.put("numAnswers", numAnswers)
+
+        val mediaType = MediaType.parse("application/json; charset=utf-8")
+        val client = OkHttpClient()
+
+        try {
+            val body = RequestBody.create(mediaType, data.toString())
+            val request = Request.Builder()
+                    .url(WebServiceConfig.url + WebServiceConfig.apiPath + "writeResult")
+                    .post(body)
+                    .build()
+            val response = client.newCall(request).execute()
+            result = DataParser.parseResult(response.body()!!.string())
+
+        } catch (exc: Exception) {
+            Log.d("myLog", exc.toString())
+        }
+        result
+    }
+
+    fun readResults(numQuestions: Int, numAnswers: Int) = async {
+        var results: ArrayList<Result> = ArrayList()
+
+        val data = JSONObject()
+        data.put("numQuestions", numQuestions)
+        data.put("numAnswers", numAnswers)
+
+        val mediaType = MediaType.parse("application/json; charset=utf-8")
+        val client = OkHttpClient()
+
+        try {
+            val body = RequestBody.create(mediaType, data.toString())
+            val request = Request.Builder()
+                    .url(WebServiceConfig.url + WebServiceConfig.apiPath + "readResults")
+                    .post(body)
+                    .build()
+            val response = client.newCall(request).execute()
+            results = DataParser.parseResults(response.body()!!.string())
+
+        } catch (exc: Exception) {
+            Log.d("myLog", exc.toString())
+        }
+
+        results
     }
 
     fun loadImage(name: String) = async {

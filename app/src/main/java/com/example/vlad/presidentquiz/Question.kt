@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * Created by vlad on 07/11/17.
  */
-class Question(val image: String, val answerId: Int, val answers: ArrayList<Answer>) : Parcelable {
+class Question(val image: String, val answerId: Int, var answers: ArrayList<Answer>) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readInt(),

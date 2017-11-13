@@ -39,20 +39,21 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
             android:text="@string/result_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/userResultTextView"
+            app:layout_constraintStart_toStartOf="@+id/userResultTextView"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/userResultTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:layout_marginStart="8dp"
+            android:text="559"
+            android:textAlignment="center"
             android:textSize="56sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/resultsRecyclerView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resultLabel"/>
 
@@ -60,26 +61,30 @@
             android:id="@+id/saveResultButton"
             android:layout_width="100dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@color/answerButton"
             android:text="@string/save_result_button"
             android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/userResultTextView"
+            app:layout_constraintStart_toStartOf="@+id/userResultTextView"
             app:layout_constraintTop_toBottomOf="@+id/userResultTextView"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/resultsRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveResultButton"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintStart_toEndOf="@+id/userResultTextView"
+            app:layout_constraintTop_toTopOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 
 

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="answerButton">#eeeeee</color>
+    <color name="colorPrimary">#757575</color>
+    <color name="colorPrimaryDark">#424242</color>
+    <color name="colorAccent">#795548</color>
+    <color name="answerButton">#e0e0e0</color>
+    <color name="background">#f5f5f5</color>
+    <color name="helpButton">#757575</color>
+    <color name="helpButtonPressed">#616161</color>
 </resources>

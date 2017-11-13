@@ -24,4 +24,8 @@ object ImageCache {
         return memoryCache.get(key)
     }
 
+    fun clear() {
+        memoryCache.evictAll()
+    }
+
 }
